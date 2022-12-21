@@ -5,7 +5,7 @@ This repository includes the code and data for preprint [arXiv:2208.11884](https
 
 ### Original Environment
 * Ubuntu 20.04 LTS
-* Ryzen 
+* AMD Ryzen 3950X 16-core processor with 128 GB RAM 
 
 ### Prerequisite
 * Python 3.9.6
