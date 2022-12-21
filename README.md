@@ -6,8 +6,8 @@ This repository includes the codes and data for the preprint arXiv:2208.11884, e
 
 
 ### Original Environment
-Ubuntu 20.04 LTS
-Python 3.9.6
-Numpy 1.20.3
-Scipy 1.6.2
+Ubuntu 20.04 LTS \\
+Python 3.9.6 \\
+Numpy 1.20.3 \\
+Scipy 1.6.2 \\
 Matplotlib 3.4.2
