@@ -1,8 +1,6 @@
 ## Unidirectional scattering with spatial homogeneity using photonic time disorder
 
-This repository includes the code and data for preprint arXiv:2208.11884 by Jungmin Kim, Dayeong Lee, Sunkyu Yu, and Namkyoo Park.
-
-
+This repository includes the code and data for preprint [arXiv:2208.11884](https://arxiv.org/abs/2208.11884), which is to be published in XXX.
 
 
 ### Original Environment
