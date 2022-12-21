@@ -6,7 +6,9 @@ This repository includes the codes and data for the preprint arXiv:2208.11884, e
 
 
 ### Original Environment
-Ubuntu 20.04 LTS  
+Ubuntu 20.04 LTS
+
+### Prerequisite
 Python 3.9.6  
 Numpy 1.20.3  
 Scipy 1.6.2  
