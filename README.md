@@ -1,6 +1,6 @@
-## Unidirectional Temporal scattering
+## Unidirectional scattering with spatial homogeneity using photonic time disorder
 
-This repository includes the codes and data for the preprint arXiv:2208.11884, entitled "Unidirectional scattering with spatial homogeneity using photonic time disorder."
+This repository includes the code and data for preprint arXiv:2208.11884 by Jungmin Kim, Dayeong Lee, Sunkyu Yu, and Namkyoo Park.
 
 
 
