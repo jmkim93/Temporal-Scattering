@@ -16,4 +16,8 @@ This repository contains the code and data for preprint [arXiv:2208.11884](https
 ---
 
 ### Usage
-Every .py file for each figure includes definition of time-varying system with the corresponding electromagnetic scattering calculation, data generation (for ensembles, if needed), and plotting figure, which are separated by a few of cells. Running cells successively will finally result in the output figure in pdf.
+Every .py file for each figure includes:
+* definition of time-varying system with the corresponding electromagnetic scattering calculation
+* data generation (for ensembles, if needed)
+* and plotting figure,
+which are separated by a few of cells. Running cells successively will finally result in the output figure in pdf.
