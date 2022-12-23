@@ -3,7 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib import animation
-
+import pandas as pd
 import math
 from multiprocessing import Pool
 
@@ -187,6 +187,7 @@ ax = np.array([[fig.add_subplot(gs[5:15,57:95]), fig.add_subplot(gs[5:15,110:148
                [fig.add_subplot(gs[85:95,57:95]), fig.add_subplot(gs[85:95,110:148]), np.nan, np.nan],])
 
 
+SrcData_4de = [ct-ct[0]]
 ax[0,0].set_title(r'Total field', fontsize=7)
 ax[0,1].set_title(r'Scattering power', fontsize=7)
 for i, ti in enumerate(1250*np.arange(9)):
@@ -196,6 +197,8 @@ for i, ti in enumerate(1250*np.arange(9)):
     ax[i,0].set(xlim=(0, Tp), ylim=(1e-6,np.max(np.abs(D))), yticks=[1e-5, 1e-2])
     ax[i,1].plot(ct-ct[0], np.fft.ifftshift(P_sca[ti])/delta**2, lw=0.75, color=c)
     
+    SrcData_4de.append(np.abs(np.fft.fftshift(np.real(D[ti]))))
+    SrcData_4de.append(np.fft.ifftshift(P_sca[ti])/delta**2)
 
     if i==8:
         ax[i,1].set(xlim=(0, Tp), ylim=(0,np.max(P_sca)/delta**2), yticks=(0,0.2))
@@ -242,18 +245,25 @@ axinst = axins.twinx()
 
 scale_factor = np.exp(-(sigma_x*0.25*k0)**2/2)
 
+SrcData_4f = [k/k0]
+
 for ii, t_snapshot in enumerate(np.arange(9)*12.5):
     c = cmap(0.999*t_snapshot/Tp) 
     ax[0,3].plot(k/k0, np.abs(D_evol_sca[int(t_snapshot/dt)])*k0/delta, lw=0.75, color=c)
     axins.plot(k/k0, np.abs(D_evol_sca[int(t_snapshot/dt)])*k0/delta, lw=0.75, color=c)
-
+    
+    SrcData_4f.append(np.abs(D_evol_sca[int(t_snapshot/dt)])*k0/delta)
+    
 ratio_conv = np.max(D_init_F*k0/delta)/(np.max(np.abs(D_evol_sca)*k0/delta)/scale_factor)
 ax[0,3].plot(k/k0, np.abs(D_init_F)*k0/delta/ratio_conv, 'dodgerblue', ls='--', lw=0.75)
 axinst.plot(k/k0, np.abs(D_init_F)*k0/delta, 'dodgerblue', ls='--', lw=0.75)
 
+SrcData_4f.append(np.abs(D_init_F)*k0/delta)
+
+
 axt.set_title('Scattering field', fontsize=7)
 ax[0,3].set(xlim=(-0.6,0.6), xlabel=r'$kc/\omega_0$',
-       ylim=(0,np.max(np.abs(D_evol_sca)*k0/delta)/scale_factor), ylabel=r'$D_\mathrm{sca}(k)$')
+       ylim=(0,np.max(np.abs(D_evol_sca)*k0/delta)/scale_factor), ylabel=r'$|D_\mathrm{sca}(k)|$')
 
 axt.set(xlim=(-0.6,0.6), 
         ylim=(0,np.max(D_init_F*k0)))
@@ -295,9 +305,39 @@ cb.set_label(r'$t/t_0$', fontsize=7)
 fig_cb.savefig('fig4_colorbar.pdf', dpi=1200, format='pdf')
 
 
+#%% Source Data
+
+SrcData_4c = np.column_stack([t, np.real(1/alpha-1)/delta])
+Column_names = ["t", "DeltaEpsilon/delta"]
+SrcData_4c = pd.DataFrame(SrcData_4c, columns=Column_names)
+SrcData_4c.to_excel("SourceData_Fig4c.xlsx", index=False)
 
 
+SrcData_4de = np.column_stack(SrcData_4de)
+Column_names = ['z/ct0',
+                '|D_tot|, t=0', '|D_sca|^2, t=0',
+                '|D_tot|, t=12.5', '|D_sca|^2, t=12.5',
+                '|D_tot|, t=25', '|D_sca|^2, t=25',
+                '|D_tot|, t=37.5', '|D_sca|^2, t=37.5',
+                '|D_tot|, t=50', '|D_sca|^2, t=50',
+                '|D_tot|, t=62.5', '|D_sca|^2, t=62.5',
+                '|D_tot|, t=75', '|D_sca|^2, t=75',
+                '|D_tot|, t=87.5', '|D_sca|^2, t=87.5',
+                '|D_tot|, t=100', '|D_sca|^2, t=100']
+SrcData_4de = pd.DataFrame(SrcData_4de, columns=Column_names)
+SrcData_4de.to_excel("SourceData_Fig4de.xlsx", index=False)
 
+
+SrcData_4f = np.column_stack(SrcData_4f)
+Column_names = ['k/k0'] + ['|D_sca|, t='+str(12.5*i) for i in range(9)] + ['D_inc']
+SrcData_4f = pd.DataFrame(SrcData_4f, columns=Column_names)
+SrcData_4f.to_excel("SourceData_Fig4f.xlsx", index=False)
+
+
+SrcData_4g = np.column_stack([omega/k0, np.abs(psi_sca_z0_F)*k0/delta])
+Column_names = ['omega/k0', '|D_sca(z=0)|'] 
+SrcData_4g = pd.DataFrame(SrcData_4g, columns=Column_names)
+SrcData_4g.to_excel("SourceData_Fig4g.xlsx", index=False)
 
 
 #%% Supp Movie: Animation

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from matplotlib.gridspec import GridSpec
 from matplotlib.colors import ListedColormap
@@ -258,6 +259,8 @@ t_before = np.arange(-1*a, 0-dt/10, dt)
 t_after = np.arange(Tp*a, (Tp+1)*a-dt/10, dt)
 t_tot = np.arange(-1*a, (Tp+1)*a-dt/10, dt)
 
+Src_Data_2b = []
+
 N_rep = 0
 np.random.seed(2)
 dalpha = np.random.multivariate_normal(np.zeros_like(np.hstack([t])), cov_alpha_fw_list[N_rep])
@@ -285,6 +288,11 @@ axt2.plot(t_tot, P_sca_tot/delta**2, c=c, lw=0.75)
 axt2.set(ylim=(0,np.max(P_sca_tot/delta**2)), yticks=(0, 5, 10), yticklabels=[0, 5, r'10  '])
 axt2.tick_params('y', colors=c)
 axt2.spines["right"].set_edgecolor(c)
+
+
+Src_Data_2b.append(t_tot)
+Src_Data_2b.append(np.real(depsilon)/delta)
+Src_Data_2b.append(P_sca_tot/delta**2)
 
 
 N_rep = 10
@@ -316,6 +324,8 @@ axt3.tick_params('y', colors=c)
 axt3.spines["right"].set_edgecolor(c)
 
 
+Src_Data_2b.append(np.real(depsilon)/delta)
+Src_Data_2b.append(P_sca_tot/delta**2)
 
 N_rep = 10
 np.random.seed(0)
@@ -344,8 +354,8 @@ axt4.set(ylim=(0,np.max(P_sca_tot/delta**2)), yticks=(0, 50, 100))
 axt4.tick_params('y', colors=c)
 axt4.spines["right"].set_edgecolor(c)
 
-
-
+Src_Data_2b.append(np.real(depsilon)/delta)
+Src_Data_2b.append(P_sca_tot/delta**2)
 
 
 
@@ -421,3 +431,28 @@ ax[8].set(xlim=np.array([-0.05,1.05])*S2w[-1]*omega_b, xlabel=r'$S_{2\omega}$', 
           ylim=(0,np.max(P_ctrlbw_bw_q3/delta**2)), yticks=(0,25,50,75), yticklabels=[0,25,50,' 75'])
 
 fig.savefig('fig2.pdf', format='pdf', dpi=1200)
+
+
+
+#%% Source Data
+
+
+Src_Data_2b = np.column_stack(Src_Data_2b)
+Column_names = ['t', 
+                '(A) Delta_epsilon/delta', '(A) |Psi_sca/delta|^2', 
+                '(B) Delta_epsilon/delta', '(B) |Psi_sca/delta|^2',
+                '(D) Delta_epsilon/delta', '(D) |Psi_sca/delta|^2']
+Src_Data_2b = pd.DataFrame(Src_Data_2b, columns=Column_names)
+Src_Data_2b.to_excel("SourceData_Fig2b.xlsx", index=False)
+
+
+Src_Data_2c = np.hstack([P_ctrlfw_fw_ens.T, P_ctrlfw_bw_ens.T])
+Column_names = ['P_FW, S0='+str(round(S0[i]*omega_b,2)) for i in range(11)] + ['P_BW, S0='+str(round(S0[i]*omega_b,2)) for i in range(11)]
+Src_Data_2c = pd.DataFrame(Src_Data_2c, columns=Column_names)
+Src_Data_2c.to_excel("SourceData_Fig2c.xlsx", index=False)
+
+
+Src_Data_2d = np.hstack([P_ctrlbw_fw_ens.T, P_ctrlbw_bw_ens.T])
+Column_names = ['P_FW, S2w='+str(round(S2w[i]*omega_b,2)) for i in range(11)] + ['P_BW, S2w='+str(round(S2w[i]*omega_b,2)) for i in range(11)]
+Src_Data_2d = pd.DataFrame(Src_Data_2d, columns=Column_names)
+Src_Data_2d.to_excel("SourceData_Fig2d.xlsx", index=False)

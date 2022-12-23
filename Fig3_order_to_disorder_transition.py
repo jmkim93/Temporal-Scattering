@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+import pandas as pd
+
 from matplotlib.gridspec import GridSpec
 
 from matplotlib.colors import ListedColormap
@@ -282,11 +284,16 @@ axins.set(xlim=(1.6,2.4), ylim=(0,2.1))
 ax[2].indicate_inset_zoom(axins, edgecolor="purple")
     
 
+Src_Data_3c = []
+
 N_rep = 0
 np.random.seed(3)
 dalpha = np.random.multivariate_normal(np.zeros_like(np.hstack([t])), cov_alpha_list[N_rep])
 depsilon = 1/(1+dalpha)-1
 ax[3].fill_between(t, depsilon/delta, -3.2, color=cmap(order_metric[N_rep]/order_metric[0]), alpha=0.5, lw=0.5, edgecolor='k')
+
+Src_Data_3c.append(t)
+Src_Data_3c.append(depsilon/delta)
 
 N_rep = 4
 np.random.seed(3)
@@ -294,11 +301,15 @@ dalpha = np.random.multivariate_normal(np.zeros_like(np.hstack([t])), cov_alpha_
 depsilon = 1/(1+dalpha)-1
 ax[4].fill_between(t, depsilon/delta, -3.2, color=cmap(order_metric[N_rep]/order_metric[0]), alpha=0.5, lw=0.5, edgecolor='k')
 
+Src_Data_3c.append(depsilon/delta)
+
 N_rep = 11
 np.random.seed(3)
 dalpha = np.random.multivariate_normal(np.zeros_like(np.hstack([t])), cov_alpha_list[N_rep])
 depsilon = 1/(1+dalpha)-1
 ax[5].fill_between(t, depsilon/delta, -3.2, color=cmap(order_metric[N_rep]/order_metric[0]), alpha=0.5, lw=0.5, edgecolor='k')
+
+Src_Data_3c.append(depsilon/delta)
 
 ax[3].set_title('Realizations', fontsize=7)
 ax[3].set(xlim=(0, 20), ylim=(-3.2,3.2),  xticklabels=[], yticks=[-2,0,2])
@@ -307,12 +318,22 @@ ax[5].set(xlim=(0, 20), ylim=(-3.2,3.2), xlabel=r'$t/t_0$', yticks=[-2,0,2])
 
 
 
+Src_Data_3ef =[k_list/omega_b]
+
 for ii in [0, 2,  11]:
     c = cmap(order_metric[ii]/order_metric[0])
     ax[6].plot(k_list/omega_b, P_fw_ens_mean[ii]/delta**2, c=c, lw=1, zorder=100)
     ax[7].plot(k_list/omega_b, P_bw_ens_mean[ii]/delta**2, c=c, lw=1, zorder=100)
     ax[6].fill_between(k_list/omega_b, P_fw_ens_q3[ii]/delta**2, P_fw_ens_q1[ii]/delta**2, color=c, lw=0, alpha=0.4)
     ax[7].fill_between(k_list/omega_b, P_bw_ens_q3[ii]/delta**2, P_bw_ens_q1[ii]/delta**2, color=c, lw=0, alpha=0.4)
+    
+    Src_Data_3ef.append(P_fw_ens_mean[ii]/delta**2)
+    Src_Data_3ef.append(P_fw_ens_q1[ii]/delta**2)
+    Src_Data_3ef.append(P_fw_ens_q3[ii]/delta**2)
+    Src_Data_3ef.append(P_bw_ens_mean[ii]/delta**2)
+    Src_Data_3ef.append(P_bw_ens_q1[ii]/delta**2)
+    Src_Data_3ef.append(P_bw_ens_q3[ii]/delta**2)
+    
  
 ax[6].set_title('Forward power', fontsize=7)
 ax[6].set(xlim=(0.9, 1.1), xlabel=r'$kc/\omega_0$',
@@ -343,7 +364,43 @@ axt8.set(xlim=(0, 65),
 axt8.legend(fontsize=6, ncol=1, frameon=False, bbox_to_anchor=(0.45,1.4) , loc='upper center')
 
 
-
-
 fig.tight_layout()
 fig.savefig('fig3.pdf', format='pdf', dpi=1200)
+
+
+
+
+#%% Source Data
+
+
+Src_Data_3c = np.column_stack(Src_Data_3c)
+Column_names = ['t', '(A) Delta epsilon/delta', '(C) Delta epsilon/delta', '(D) Delta epsilon/delta']
+Src_Data_3c = pd.DataFrame(Src_Data_3c, columns=Column_names)
+Src_Data_3c.to_excel("SourceData_Fig3c.xlsx", index=False)
+
+
+
+Src_Data_3d = (P_bw_ens_total[:,100]/delta**2).reshape(12,10000).T
+Column_names = ['tau='+str(round(order_metric[i]/delta**4, 2)) for i in range(12)]
+
+Src_Data_3d = pd.DataFrame(Src_Data_3d, columns=Column_names)
+Src_Data_3d.to_excel("SourceData_Fig3d.xlsx", index=False)
+
+
+Src_Data_3ef = np.column_stack(Src_Data_3ef)
+Column_names  = ['kc/omega0',
+                 'A, P_FW, mean', 'A, P_FW, Q1', 'A, P_FW, Q3',
+                 'A, P_BW, mean', 'A, P_BW, Q1', 'A, P_BW, Q3',
+                 'B, P_FW, mean', 'B, P_FW, Q1', 'B, P_FW, Q3',
+                 'B, P_BW, mean', 'B, P_BW, Q1', 'B, P_BW, Q3',
+                 'D, P_FW, mean', 'D, P_FW, Q1', 'D, P_FW, Q3',
+                 'D, P_BW, mean', 'D, P_BW, Q1', 'D, P_BW, Q3',]
+Src_Data_3ef = pd.DataFrame(Src_Data_3ef, columns=Column_names)
+Src_Data_3ef.to_excel("SourceData_Fig3ef.xlsx", index=False)
+
+#%% Source Data for all k values
+
+Src_Data_3def = np.vstack([P_fw_ens_total, P_bw_ens_total])
+Column_names = ['kc/omega0='+str(k_list[i]/omega_b) for i in range(201)]
+Src_Data_3def = pd.DataFrame(Src_Data_3def, columns=Column_names)
+Src_Data_3def.to_excel("SourceData_Fig3def.xlsx", index=False)

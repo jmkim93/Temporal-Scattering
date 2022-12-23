@@ -3,7 +3,7 @@ import numpy.ma as ma
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-
+import pandas as pd
 
 from multiprocessing import Pool
 
@@ -174,3 +174,9 @@ fig.tight_layout()
 fig.savefig('fig1.pdf', format='pdf', dpi=1200)
 
 
+#%% Source Data
+
+SrcData = np.column_stack([t[1:-1], power[1:-1], epsilon_s[1:-1], u_EM0[1:-1]])
+Column_names = ["t", "power", "epsilon", "u_EM0"]
+SrcData = pd.DataFrame(SrcData, columns=Column_names)
+SrcData.to_excel("SourceData_Fig1.xlsx", index=False)
