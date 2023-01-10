@@ -54,7 +54,7 @@ coeff_b = S0/16
 coeff_a = (A-7*coeff_b)/4
 
 S_list = (np.abs(omega/omega_b)<2).reshape(1,-1) * ((4-(omega/omega_b)**2)**2).reshape(1,-1) * (coeff_a.reshape(-1,1)@ ((omega/omega_b)**2).reshape(1,-1) + coeff_b.reshape(-1,1))
-S_fw_list = S_list * (delta**2)
+S_fw_list = S_list * (delta**2)    # Time structure factor for controling of forward scattering (Eq S35)
 R_fw_list = np.real([np.sum([s*np.exp(-1j*om*tau)*domega/(2*np.pi) for s, om in zip(S, omega)], axis=0) for S in S_fw_list])
 
 
@@ -63,7 +63,7 @@ S2w = 4*A/5 * np.linspace(0, 1, N_list)
 coeff_b = S2w/4
 coeff_a = (A - 5*coeff_b)/2
 S_list = ((np.abs(omega/omega_b)<3)* (omega/omega_b)**2 * (3 - np.abs(omega)/omega_b)).reshape(1,-1) * (coeff_a.reshape(-1,1)@((np.abs(omega/omega_b)-2)**2).reshape(1,-1) + coeff_b.reshape(-1,1) )
-S_bw_list = S_list * (delta**2)
+S_bw_list = S_list * (delta**2)    # Time structure factor for controling of backward scattering (Eqs S36 and S37)
 R_bw_list = np.real([np.sum([s*np.exp(-1j*om*tau)*domega/(2*np.pi) for s, om in zip(S, omega)], axis=0) for S in S_bw_list])
 
 
@@ -78,8 +78,8 @@ def int_1d_stat(R):
 
 
 with Pool(30) as pool:
-    Int_1d_stat_ctrlfw = np.array(pool.map(int_1d_stat, R_fw_list))
-    Int_1d_stat_ctrlbw = np.array(pool.map(int_1d_stat, R_bw_list))
+    Int_1d_stat_ctrlfw = np.array(pool.map(int_1d_stat, R_fw_list))    # Forward scattering power for eq (6)
+    Int_1d_stat_ctrlbw = np.array(pool.map(int_1d_stat, R_bw_list))    # Backward scattering power for eq (6)
 
 
 
@@ -101,7 +101,7 @@ with Pool(30) as pool:
 
 
 
-#%% Fig S3: ensemble structure factor validation / estimation
+#%% Fig S4: ensemble structure factor validation / estimation
 
 N_ens = 10000
 dalpha_ens_fw = [np.random.multivariate_normal(np.zeros_like(np.hstack([t])), cov_alpha_fw_list[0], size=N_ens),
@@ -189,8 +189,8 @@ def intensity_oscillation(cov_alpha):
 
 tic = time()
 
-P_ctrlfw_ens = [intensity_oscillation(cov) for cov in cov_alpha_fw_list]
-P_ctrlbw_ens = [intensity_oscillation(cov) for cov in cov_alpha_bw_list]
+P_ctrlfw_ens = [intensity_oscillation(cov) for cov in cov_alpha_fw_list]    # TMM data for Fig 2c
+P_ctrlbw_ens = [intensity_oscillation(cov) for cov in cov_alpha_bw_list]    # TMM data for Fig 2d
 
 
 P_ctrlfw_fw_ens = np.array([pens[0] for pens in P_ctrlfw_ens])
@@ -211,10 +211,10 @@ np.savetxt('Data_Fig2_bwctrl_bw_ens.csv', P_ctrlbw_bw_ens, delimiter=' ')
 
 #%% Fig 2
 
-P_ctrlfw_fw_ens = np.loadtxt('Data_Fig2_fwctrl_fw.csv',  delimiter=' ')
-P_ctrlfw_bw_ens = np.loadtxt('Data_Fig2_fwctrl_bw.csv', delimiter=' ')
-P_ctrlbw_fw_ens = np.loadtxt('Data_Fig2_bwctrl_fw.csv',  delimiter=' ')
-P_ctrlbw_bw_ens= np.loadtxt('Data_Fig2_bwctrl_bw.csv', delimiter=' ')
+P_ctrlfw_fw_ens = np.loadtxt('Data_Fig2_fwctrl_fw_ens.csv',  delimiter=' ')    # Change this file name if you want to check the ensemble data in the manuscript (data link at README.md)
+P_ctrlfw_bw_ens = np.loadtxt('Data_Fig2_fwctrl_bw_ens.csv', delimiter=' ')    # Change this file name if you want to check the ensemble data in the manuscript (data link at README.md)
+P_ctrlbw_fw_ens = np.loadtxt('Data_Fig2_bwctrl_fw_ens.csv',  delimiter=' ')    # Change this file name if you want to check the ensemble data in the manuscript (data link at README.md)
+P_ctrlbw_bw_ens= np.loadtxt('Data_Fig2_bwctrl_bw_ens.csv', delimiter=' ')    # Change this file name if you want to check the ensemble data in the manuscript (data link at README.md)
 
 
 cs = np.array([0.2,0.2,0.2,1]).reshape(1,-1)
@@ -239,7 +239,7 @@ ax = np.array([fig.add_subplot(gs[10:58,0:30]), fig.add_subplot(gs[62:110,0:30])
                 fig.add_subplot(gs[62:110,128:158]), fig.add_subplot(gs[62:110,170:200])])
 
 
-
+# Fig 2a
 for ii in range(N_list):
     c1 = cmap1(ii/(N_list)*0.999)
     ax[0].plot(omega/omega_b, S_fw_list[ii]*omega_b/delta**2, c=c1, lw=1)
@@ -254,7 +254,7 @@ ax[1].set(xticks=np.linspace(-2,2,3), xlabel=r'$\omega/\omega_0$', xlim=(-3,3),
           ylabel=r'$S_\mathrm{BW}(\omega)$', ylim=(0,np.max(S_bw_list*omega_b/delta**2)))
 
 
-
+# Fig 2b
 t_before = np.arange(-1*a, 0-dt/10, dt)
 t_after = np.arange(Tp*a, (Tp+1)*a-dt/10, dt)
 t_tot = np.arange(-1*a, (Tp+1)*a-dt/10, dt)
@@ -358,7 +358,7 @@ Src_Data_2b.append(np.real(depsilon)/delta)
 Src_Data_2b.append(P_sca_tot/delta**2)
 
 
-
+# Figs 2c & 2d
 P_ctrlfw_fw_mean = np.average(P_ctrlfw_fw_ens, axis=1)
 P_ctrlfw_fw_q1 = np.percentile(P_ctrlfw_fw_ens, 25, axis=1)
 P_ctrlfw_fw_q3 = np.percentile(P_ctrlfw_fw_ens, 75, axis=1)
