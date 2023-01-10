@@ -62,7 +62,7 @@ def diff(x, dt):
     diffx_med = (x[2:] - x[:-2])/(2*dt)
     return np.hstack([diffx_init, diffx_med, diffx_final])
     
-# Energy description in open system
+# Energy description in the open system
 sys = TMM.time_dep(dt*np.ones_like(t), epsilon_s, np.ones_like(t), epsilon_s[0], 1)
 psi = sys.evolution(k0)[0][:-1]
 diff_alpha = diff(alpha_s, dt)
@@ -72,12 +72,12 @@ P1 = np.abs(psi)**2
 P2 = np.abs(diff_psi / k0)**2
 
 u_M = P2/4    # Magnetic energy density
-u_E = (alpha_s*P1 - np.cumsum(diff_alpha*P1*dt) )/4    # Electric energy density considering incoming power to the system
+u_E = (alpha_s*P1 - np.cumsum(diff_alpha*P1*dt) )/4    # Electric energy density considering energy by environment
 u_E0 = (alpha_s*P1  )/4
 
-u_EM = u_E + u_M     # Conserved energy
+u_EM = u_E + u_M     # Conservative EM energy
 
-u_EM0 = (alpha_s*P1 + P2)/4    # Instantaneous energy
+u_EM0 = (alpha_s*P1 + P2)/4    # Nonconservative EM energy/Instantaneous EM energy
 power = diff(u_EM0, dt)
 
 power_max = np.max(np.abs(power[2:-2]))
