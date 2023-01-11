@@ -36,7 +36,7 @@ matplotlib.rcParams.update({'figure.subplot.bottom': 0.05,
 
 
 
-bump = lambda x: 1-(1-(np.abs(x)<1)* (x**2-1)**2)**1
+bump = lambda x: 1-(1-(np.abs(x)<1)* (x**2-1)**2)**1    # Eq (S39)
 
 Bragg_peak = lambda x: np.exp(-(4*x)**2/2)
 
@@ -63,32 +63,32 @@ omega = 4*omega_b*np.linspace(-1,1, 8001)
 domega = omega[1]-omega[0]
 
 
-dod = np.array([0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+dod = np.array([0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])    # Transition parameter for the structure factor
 logdod = np.log(dod)
 
 doc = 1 - dod
 N_list = len(dod)
 
 bandwidth = 2*omega_b
-S_disorder = bump((omega-2*omega_b)/bandwidth) +bump((omega+2*omega_b)/bandwidth)
-factor_disorder = delta**2/np.sum(S_disorder*domega/(2*np.pi))
+S_disorder = bump((omega-2*omega_b)/bandwidth) +bump((omega+2*omega_b)/bandwidth)    # Eq (S40)
+factor_disorder = delta**2/np.sum(S_disorder*domega/(2*np.pi))    # Normalization factor by eq (S42)
 
 omega_c_list = omega_b*np.hstack([np.arange(0.5,2,0.5), np.arange(2.5,5,0.5)])
 S_crystal = np.sum([bump((omega-omega_c)/(bandwidth/40))+bump((omega+omega_c)/(bandwidth/40)) for omega_c in omega_c_list], axis=0)
-S_crystal *= 1/np.cosh(omega/(omega_b/2))
+S_crystal *= 1/np.cosh(omega/(omega_b/2))    # Eq (S41)
 
-factor_crystal = delta**2/np.sum(S_crystal*domega/(2*np.pi))
+factor_crystal = delta**2/np.sum(S_crystal*domega/(2*np.pi))    # Normalization factor by eq (S42)
 
 
 S_list = (factor_disorder * bump(1/(bandwidth*dod).reshape(-1,1) @ (omega-2*omega_b).reshape(1,-1))
           + factor_disorder * bump(1/(bandwidth*dod).reshape(-1,1) @ (omega+2*omega_b).reshape(1,-1)) 
-          + factor_crystal * doc.reshape(-1,1)@S_crystal.reshape(1,-1))
+          + factor_crystal * doc.reshape(-1,1)@S_crystal.reshape(1,-1))    # Eq (7)
 
 S_Poisson = np.ones_like(omega) * np.average(S_list[-1])
 
 R_list = np.real([np.sum([s*np.exp(-1j*om*tau)*domega/(2*np.pi) for s, om in zip(S, omega)], axis=0) for S in S_list])
 
-order_metric = np.sum((S_list - S_Poisson)**2, axis=1) * domega/a
+order_metric = np.sum((S_list - S_Poisson)**2, axis=1) * domega/a    # Eq (8)
 log_om = np.log(order_metric)
 
 
@@ -135,8 +135,8 @@ def int_1d_stat(R):
 
 
 with Pool(30) as pool:
-    Int_2d_stat = np.array(pool.map(int_2d_stat, R_list))
-    Int_1d_stat = np.array(pool.map(int_1d_stat, R_list))
+    Int_2d_stat = np.array(pool.map(int_2d_stat, R_list))    # Eq (5)
+    Int_1d_stat = np.array(pool.map(int_1d_stat, R_list))    # Eq (6)
 
 
 #%% Covariance matrix
@@ -222,7 +222,7 @@ ax = np.array([fig.add_subplot(gs[2:14,7:45]), fig.add_subplot(gs[2:14,55:93]),
                 fig.add_subplot(gs[55:82,75:93]),])
 
 
-
+# Fig 3a
 for kk in [-1, 0,1]:
     ax[kk].spines['top'].set_visible(False)
     ax[kk].spines['right'].set_visible(False)
@@ -260,7 +260,7 @@ ax[1].set(xlim=(-4,4), xticks=(-2,0,2), xticklabels=[],
           ylim=(0,np.max(S_disorder)), yticks=[])
 
 
-
+# Fig 3b
 axins = ax[2].inset_axes([0.6, 0.25, 0.37, 0.72])
 axins.set(xticks=[], yticks=[])
 
@@ -283,7 +283,7 @@ ax[2].set(xlim=(-4,4), ylim=(0,28), xlabel=r'$\omega/\omega_0$', ylabel=r'$S(\om
 axins.set(xlim=(1.6,2.4), ylim=(0,2.1))
 ax[2].indicate_inset_zoom(axins, edgecolor="purple")
     
-
+# Fig 3c
 Src_Data_3c = []
 
 N_rep = 0
@@ -317,7 +317,7 @@ ax[4].set(xlim=(0, 20), ylim=(-3.2,3.2), ylabel=r'$\Delta\epsilon(t)/\delta$', x
 ax[5].set(xlim=(0, 20), ylim=(-3.2,3.2), xlabel=r'$t/t_0$', yticks=[-2,0,2])
 
 
-
+# Fig 3e & 3f
 Src_Data_3ef =[k_list/omega_b]
 
 for ii in [0, 2,  11]:
@@ -343,7 +343,7 @@ ax[7].set(xlim=(0.9, 1.1), xlabel=r'$kc/\omega_0$',
           ylim=(0,75), ylabel=r'$ P_\mathrm{BW}(k)$')
 
 
-
+# Fig 3d
 axt8 = ax[8].twinx()
 ax[8].set(yticks=[], xlabel=r'$P_\mathrm{BW}(\omega_0/c)$')
 for ii in range(N_list):
