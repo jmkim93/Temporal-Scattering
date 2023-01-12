@@ -45,7 +45,7 @@ k0 = 2*np.pi/1
 
 sigma_x = 1
 
-D_init = np.exp(-0.5* (ct/sigma_x)**2) 
+D_init = np.exp(-0.5* (ct/sigma_x)**2)    # Gaussian pulse for the initial displacement field  
 D_init_F = np.fft.fftshift( np.fft.fft(np.fft.ifftshift(D_init))*dt  )
 
 
@@ -69,15 +69,15 @@ delta = 0.0001
 omega = np.linspace(-1.2*k0, 1.2*k0, 2401)
 domega = omega[1]-omega[0]
 
-omega1 = 0.5*k0
-omega2 = 1*k0
+omega1 = 0.5*k0    # Minimum "material" frequency for filtering
+omega2 = 1*k0    # Maximum "material" frequency for filtering
 omega_center = (omega1 + omega2)/2
 sigma = 2/np.abs(omega2-omega1)
 
 rect = lambda x: (np.abs(x)<0.5) + (np.abs(x)==0.5)*0.5
 
 
-S = rect( (np.abs(omega)-0.75*k0)/(0.5*k0)) * delta**2 * np.pi * k0/(omega+k0*1e-10)**2 #sq
+S = rect( (np.abs(omega)-0.75*k0)/(0.5*k0)) * delta**2 * np.pi * k0/(omega+k0*1e-10)**2    # Designed structure factor for filtering
 R = np.sum([s*np.exp(-1j*om*tau)*domega/(2*np.pi) for s, om in zip(S, omega)], axis=0)
 
 
@@ -150,20 +150,20 @@ with Pool(30) as pool:
     D_evol = pool.starmap(evol_function, zip(k, D_init_F))
     D_evol_inc = pool.starmap(evol_function_inc, zip(k, D_init_F))
 
-D_evol = np.column_stack(D_evol)
-D_evol_inc = np.column_stack(D_evol_inc)
+D_evol = np.column_stack(D_evol)    # Time-evoluted total field in k-space
+D_evol_inc = np.column_stack(D_evol_inc)    # Time-evoluted incident field in k-space
 
-D_evol_sca = D_evol - D_evol_inc
+D_evol_sca = D_evol - D_evol_inc    # Time-evoluted scattering field in k-space
   
 D = np.fft.fftshift(np.fft.ifft(np.fft.ifftshift(D_evol, axes=1), axis=1)/dt,axes=1)
 D_inc = np.fft.fftshift(np.fft.ifft(np.fft.ifftshift(D_evol_inc, axes=1), axis=1)/dt,axes=1)
 
-D_sca = D - D_inc
+D_sca = D - D_inc    # Time-evoluted scattering field in real space
 P_sca = np.abs(D_sca)**2
 
 
 psi_sca_z0 = D_sca[:-1,10000]
-psi_sca_z0_F = np.sum([psi0*np.exp(1j*omega*t0)*dt for psi0, t0 in zip(psi_sca_z0, t_ext)], axis=0)
+psi_sca_z0_F = np.sum([psi0*np.exp(1j*omega*t0)*dt for psi0, t0 in zip(psi_sca_z0, t_ext)], axis=0)    # Time-evoluted scattering field in omega-axis
 
 
 
@@ -186,7 +186,7 @@ ax = np.array([[fig.add_subplot(gs[5:15,57:95]), fig.add_subplot(gs[5:15,110:148
                [fig.add_subplot(gs[75:85,57:95]), fig.add_subplot(gs[75:85,110:148]), np.nan, np.nan],
                [fig.add_subplot(gs[85:95,57:95]), fig.add_subplot(gs[85:95,110:148]), np.nan, np.nan],])
 
-
+# Fig 4d & 4e
 SrcData_4de = [ct-ct[0]]
 ax[0,0].set_title(r'Total field', fontsize=7)
 ax[0,1].set_title(r'Scattering power', fontsize=7)
@@ -215,7 +215,7 @@ for i, ti in enumerate(1250*np.arange(9)):
 ax[4,0].set(ylabel=r'$|D_\mathrm{tot}(z)|$')
 ax[4,1].set(ylabel=r'$|D_\mathrm{sca}(z)|^2$')
 
-    
+# Fig 4a, 4b & 4c     
 ax[0,2].set_title(r'Design', fontsize=7)
 ax[0,2].plot(omega/k0, S*k0/delta**2, 'k', lw=0.75)
 ax[0,2].set(xlim=(-1.2, 1.2), xlabel=r'$\omega /\omega_0$', 
@@ -236,7 +236,7 @@ ax[2,2].set(xlim=(5,30), ylim=(-2.5,2.5), yticks=(-2,0,2),
             xlabel=r'$t/t_0$', ylabel=r'$\Delta\epsilon(t)/\delta$')
 
 
-
+# Fig 4f
 axins = ax[0,3].inset_axes([0.4,0.15,0.55,0.8])
 axins.set_facecolor('white')
 axt = ax[0,3].twinx()
@@ -281,7 +281,7 @@ axinst.set(xlim=(-0.55,-0.2), xticks=[],
 ax[0,3].indicate_inset_zoom(axins, edgecolor='k', lw=0.75)
 
 
-
+# Fig 4g
 ax[1,3].plot(omega/k0, np.abs(psi_sca_z0_F)*k0/delta, color='navy', lw=0.75)
 axt = ax[1,3].twinx()
 S2omega = rect( (np.abs(omega)-0.375*k0)/(0.25*k0) ) 
