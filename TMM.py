@@ -17,7 +17,7 @@ class time_dep():
         
         self.t = np.array([ sum(self.interval[:i]) for i in range(self.num_layer+1)])
         
-    
+    # Time-domain transfer matrix method (TD-TMM)    
     def T_matrix(self, k):
         omega_0 = k
         omega = omega_0 / self.n
@@ -27,14 +27,14 @@ class time_dep():
         T = A_amb @ T
         
         for i in range(self.num_layer):
-            A = np.array([[1,1], [self.Z[i], -self.Z[i]]])
-            B = np.array([[np.exp(-1j*omega[i]*self.interval[i]), 0],[0, np.exp(1j*omega[i]*self.interval[i])]])
+            A = np.array([[1,1], [self.Z[i], -self.Z[i]]])    # Transmission matrix at interface
+            B = np.array([[np.exp(-1j*omega[i]*self.interval[i]), 0],[0, np.exp(1j*omega[i]*self.interval[i])]])    # Propagation matrix
             T = B @ inv(A) @ T
             T = A @ T
         T = inv(A_amb) @ T
         return T
     
-    
+    # Transfer matrix to Scattering matrix
     def S_matrix(self, k):
         omega_0 = k
         omega = omega_0 / self.n
@@ -60,7 +60,7 @@ class time_dep():
         return S
     
     
-    
+    # Wave evolution with TD-TMM 
     def evolution(self, k, direction='f'):
         
         omega_0 = np.abs(k) 
