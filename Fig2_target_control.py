@@ -377,11 +377,11 @@ P_ctrlbw_bw_q3 = np.percentile(P_ctrlbw_bw_ens, 75, axis=1)
 
 
 
-ax[5].plot(S0*omega_b, 0.25*Int_1d_stat_ctrlfw[:,0]*omega_b*Tp/delta**2, 'm', lw=0.75, label=r'Eq.(6)')
-ax[7].plot(S0*omega_b, 0.25*Int_1d_stat_ctrlfw[:,1]*omega_b*Tp/delta**2, 'm', lw=0.75, label=r'Eq.(6)')
+ax[5].plot(S0*omega_b, 0.25*Int_1d_stat_ctrlfw[:,0]*omega_b*Tp/delta**2, 'orange', lw=0.75, label=r'Eq.(6)')
+ax[7].plot(S0*omega_b, 0.25*Int_1d_stat_ctrlfw[:,1]*omega_b*Tp/delta**2, 'orange', lw=0.75, label=r'Eq.(6)')
 
-ax[6].plot(S2w*omega_b, 0.25*Int_1d_stat_ctrlbw[:,0]*omega_b*Tp/delta**2, 'm', lw=0.75, label=r'Eq.(6)')
-ax[8].plot(S2w*omega_b, 0.25*Int_1d_stat_ctrlbw[:,1]*omega_b*Tp/delta**2, 'm', lw=0.75, label=r'Eq.(6)')
+ax[6].plot(S2w*omega_b, 0.25*Int_1d_stat_ctrlbw[:,0]*omega_b*Tp/delta**2, 'orange', lw=0.75, label=r'Eq.(6)')
+ax[8].plot(S2w*omega_b, 0.25*Int_1d_stat_ctrlbw[:,1]*omega_b*Tp/delta**2, 'orange', lw=0.75, label=r'Eq.(6)')
 
 for ii in range(11):
     c1 = cmap1(ii/(N_list-1)*0.999)
@@ -389,16 +389,11 @@ for ii in range(11):
     c2 = cmap2(ii/(N_list-1)*0.999)
     c2_err = 1-(1-np.array(c2[:3]))*0.5
     
-    if ii==0:
-        ax[5].errorbar(S0[ii]*omega_b, P_ctrlfw_fw_mean[ii]/delta**2, 
+
+    ax[5].errorbar(S0[ii]*omega_b, P_ctrlfw_fw_mean[ii]/delta**2, 
                    yerr=np.array([[P_ctrlfw_fw_mean[ii]-P_ctrlfw_fw_q1[ii]],
                                   [P_ctrlfw_fw_q3[ii]-P_ctrlfw_fw_mean[ii]]])/delta**2,
-                   ecolor=c1_err, color=c1, fmt='o', lw=2, ms=2, label='TMM')
-    else:
-        ax[5].errorbar(S0[ii]*omega_b, P_ctrlfw_fw_mean[ii]/delta**2, 
-                       yerr=np.array([[P_ctrlfw_fw_mean[ii]-P_ctrlfw_fw_q1[ii]],
-                                      [P_ctrlfw_fw_q3[ii]-P_ctrlfw_fw_mean[ii]]])/delta**2,
-                       ecolor=c1_err, color=c1, fmt='o', lw=2, ms=2)
+                   ecolor=c1_err, color=c1, fmt='o', lw=2, ms=2, label='TMM' if ii==0 else None)
     
     ax[7].errorbar(S0[ii]*omega_b, P_ctrlfw_bw_mean[ii]/delta**2, 
                    yerr=np.array([[P_ctrlfw_bw_mean[ii]-P_ctrlfw_bw_q1[ii]],
@@ -409,11 +404,11 @@ for ii in range(11):
                    yerr=np.array([[P_ctrlbw_fw_mean[ii]-P_ctrlbw_fw_q1[ii]],
                                   [P_ctrlbw_fw_q3[ii]-P_ctrlbw_fw_mean[ii]]])/delta**2,
                    ecolor=c2_err, color=c2, fmt='o', lw=2, ms=2)
-    
+
     ax[8].errorbar(S2w[ii]*omega_b, P_ctrlbw_bw_mean[ii]/delta**2, 
-                   yerr=np.array([[P_ctrlbw_bw_mean[ii]-P_ctrlbw_bw_q1[ii]],
-                                  [P_ctrlbw_bw_q3[ii]-P_ctrlbw_bw_mean[ii]]])/delta**2,
-                   ecolor=c2_err, color=c2, fmt='o', lw=2, ms=2)
+               yerr=np.array([[P_ctrlbw_bw_mean[ii]-P_ctrlbw_bw_q1[ii]],
+                              [P_ctrlbw_bw_q3[ii]-P_ctrlbw_bw_mean[ii]]])/delta**2,
+               ecolor=c2_err, color=c2, fmt='o', lw=2, ms=2)
 
 
 ax[5].set_title('Forward control', fontsize=7)
@@ -423,6 +418,7 @@ ax[7].set(xlim=np.array([-0.05,1.05])*S0[-1]*omega_b, xlabel=r'$S_0$',xticks=(0,
           ylim=(0,np.max(P_ctrlfw_bw_q3/delta**2)), ylabel=r'$P_\mathrm{BW}$', yticks=(0,0.5,1), yticklabels=['0.0',0.5,' 1.0'])
 
 ax[5].legend(frameon=False, fontsize=6, loc=2)
+
 
 ax[6].set_title('Backward control', fontsize=7)
 ax[6].set(xlim=np.array([-0.05,1.05])*S2w[-1]*omega_b, xticklabels=[],xticks=(0,1,2),
