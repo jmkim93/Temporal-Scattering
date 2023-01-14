@@ -443,16 +443,38 @@ Column_names = ['t',
                 '(B) Delta_epsilon/delta', '(B) |Psi_sca/delta|^2',
                 '(D) Delta_epsilon/delta', '(D) |Psi_sca/delta|^2']
 Src_Data_2b = pd.DataFrame(Src_Data_2b, columns=Column_names)
-Src_Data_2b.to_excel("SourceData_Fig2b.xlsx", index=False)
 
 
-Src_Data_2c = np.hstack([P_ctrlfw_fw_ens.T, P_ctrlfw_bw_ens.T])
+Src_Data_2c = np.column_stack([S0*omega_b, 
+                               P_ctrlfw_fw_mean/delta**2, P_ctrlfw_fw_q1/delta**2, P_ctrlfw_fw_q3/delta**2, 0.25*Int_1d_stat_ctrlfw[:,0]*omega_b*Tp/delta**2,
+                               P_ctrlfw_bw_mean/delta**2, P_ctrlfw_bw_q1/delta**2, P_ctrlfw_bw_q3/delta**2, 0.25*Int_1d_stat_ctrlfw[:,1]*omega_b*Tp/delta**2])
+Column_names = ['S0', 
+                'P_FW, mean', 'P_FW, q1', 'P_FW, q3', 'P_FW, Eq.(6)',
+                'P_BW, mean', 'P_BW, q1', 'P_BW, q3', 'P_BW, Eq.(6)']
+Src_Data_2c = pd.DataFrame(np.real(Src_Data_2c), columns=Column_names)
+
+
+Src_Data_2d = np.column_stack([S2w*omega_b, 
+                               P_ctrlbw_fw_mean/delta**2, P_ctrlbw_fw_q1/delta**2, P_ctrlbw_fw_q3/delta**2, 0.25*Int_1d_stat_ctrlbw[:,0]*omega_b*Tp/delta**2,
+                               P_ctrlbw_bw_mean/delta**2, P_ctrlbw_bw_q1/delta**2, P_ctrlbw_bw_q3/delta**2, 0.25*Int_1d_stat_ctrlbw[:,1]*omega_b*Tp/delta**2])
+Column_names = ['S2w', 
+                'P_FW, mean', 'P_FW, q1', 'P_FW, q3', 'P_FW, Eq.(6)',
+                'P_BW, mean', 'P_BW, q1', 'P_BW, q3', 'P_BW, Eq.(6)']
+Src_Data_2d = pd.DataFrame(np.real(Src_Data_2d), columns=Column_names)
+
+
+with pd.ExcelWriter("SourceData_Fig2.xlsx") as writer:
+    Src_Data_2b.to_excel(writer, index=False, sheet_name="Fig. 2b")
+    Src_Data_2c.to_excel(writer, index=False, sheet_name="Fig. 2c")
+    Src_Data_2d.to_excel(writer, index=False, sheet_name="Fig. 2d")
+    
+    
+Ens_Data_2c = np.hstack([P_ctrlfw_fw_ens.T, P_ctrlfw_bw_ens.T])
 Column_names = ['P_FW, S0='+str(round(S0[i]*omega_b,2)) for i in range(11)] + ['P_BW, S0='+str(round(S0[i]*omega_b,2)) for i in range(11)]
-Src_Data_2c = pd.DataFrame(Src_Data_2c, columns=Column_names)
-Src_Data_2c.to_excel("SourceData_Fig2c.xlsx", index=False)
+Ens_Data_2c = pd.DataFrame(Ens_Data_2c, columns=Column_names)
+Ens_Data_2c.to_excel("EnsembleData_Fig2c.xlsx", index=False)
 
-
-Src_Data_2d = np.hstack([P_ctrlbw_fw_ens.T, P_ctrlbw_bw_ens.T])
+Ens_Data_2d = np.hstack([P_ctrlbw_fw_ens.T, P_ctrlbw_bw_ens.T])
 Column_names = ['P_FW, S2w='+str(round(S2w[i]*omega_b,2)) for i in range(11)] + ['P_BW, S2w='+str(round(S2w[i]*omega_b,2)) for i in range(11)]
-Src_Data_2d = pd.DataFrame(Src_Data_2d, columns=Column_names)
-Src_Data_2d.to_excel("SourceData_Fig2d.xlsx", index=False)
+Ens_Data_2d = pd.DataFrame(Ens_Data_2d, columns=Column_names)
+Ens_Data_2d.to_excel("EnsembleData_Fig2d.xlsx", index=False)
