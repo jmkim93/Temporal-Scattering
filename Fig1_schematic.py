@@ -89,7 +89,7 @@ power_out = ma.array(power, mask=(power>-0.002*power_max))
 
 #%% Fig 1 
 
-fig = plt.figure(figsize=(3.375, 2.8))
+fig = plt.figure(figsize=(3.46, 2.8))
 gs = GridSpec(nrows=30, ncols=20)
 
 ax = np.array([fig.add_subplot(gs[0:7, 2:9]), fig.add_subplot(gs[0:7, 11:18]),
