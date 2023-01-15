@@ -174,7 +174,7 @@ cmap1 = matplotlib.cm.get_cmap('inferno')
 newcolors = cmap1(np.linspace(0,0.85,256))
 cmap = matplotlib.colors.ListedColormap(newcolors)
 
-fig = plt.figure(figsize=(3.375*2, 2.7))
+fig = plt.figure(figsize=(7.08, 2.7))
 gs = GridSpec(nrows=105, ncols=200)
 ax = np.array([[fig.add_subplot(gs[5:15,57:95]), fig.add_subplot(gs[5:15,110:148]), fig.add_subplot(gs[5:25,2:33]), fig.add_subplot(gs[5:42,168:198])],
                [fig.add_subplot(gs[15:25,57:95]), fig.add_subplot(gs[15:25,110:148]), fig.add_subplot(gs[40:60,2:33]), fig.add_subplot(gs[58:95,168:198])],
@@ -185,6 +185,7 @@ ax = np.array([[fig.add_subplot(gs[5:15,57:95]), fig.add_subplot(gs[5:15,110:148
                [fig.add_subplot(gs[65:75,57:95]), fig.add_subplot(gs[65:75,110:148]), np.nan, np.nan],
                [fig.add_subplot(gs[75:85,57:95]), fig.add_subplot(gs[75:85,110:148]), np.nan, np.nan],
                [fig.add_subplot(gs[85:95,57:95]), fig.add_subplot(gs[85:95,110:148]), np.nan, np.nan],])
+
 
 # Fig 4d & 4e
 SrcData_4de = [ct-ct[0]]
@@ -297,20 +298,32 @@ fig.tight_layout()
 fig.savefig('fig4.pdf', dpi=1200, format='pdf')
 
 
-fig_cb, cax = plt.subplots(figsize=(3.375*2, 2.7))
+fig_cb, cax = plt.subplots(figsize=(7.08, 2.7))
 norm = matplotlib.colors.Normalize(vmin=0,vmax=100)
 cb = plt.colorbar(matplotlib.cm.ScalarMappable(cmap=cmap, norm=norm), ax=cax,  
-                  orientation='horizontal', shrink=0.07)
-cb.set_label(r'$t/t_0$', fontsize=7)
+                  orientation='horizontal', shrink=0.06)
+cb.set_ticks([0,50,100])
+cb.ax.tick_params(labelsize=6)
+cb.ax.set_title(r'$t/t_0$', fontsize=6)
 fig_cb.savefig('fig4_colorbar.pdf', dpi=1200, format='pdf')
 
 
 #%% Source Data
 
+
+SrcData_4a = np.column_stack([omega/k0, S*k0/delta**2])
+Column_names = ["omega/omega_0", "S/delta^2"]
+SrcData_4a = pd.DataFrame(SrcData_4a, columns=Column_names)
+
+
+SrcData_4b = np.column_stack([tau, R/delta**2])
+Column_names = ["Delta t/t_0", "C/delta^2"]
+SrcData_4b = pd.DataFrame(np.real(SrcData_4b), columns=Column_names)
+
+
 SrcData_4c = np.column_stack([t, np.real(1/alpha-1)/delta])
-Column_names = ["t", "DeltaEpsilon/delta"]
+Column_names = ["t/t0", "DeltaEpsilon/delta"]
 SrcData_4c = pd.DataFrame(SrcData_4c, columns=Column_names)
-SrcData_4c.to_excel("SourceData_Fig4c.xlsx", index=False)
 
 
 SrcData_4de = np.column_stack(SrcData_4de)
@@ -325,19 +338,26 @@ Column_names = ['z/ct0',
                 '|D_tot|, t=87.5', '|D_sca|^2, t=87.5',
                 '|D_tot|, t=100', '|D_sca|^2, t=100']
 SrcData_4de = pd.DataFrame(SrcData_4de, columns=Column_names)
-SrcData_4de.to_excel("SourceData_Fig4de.xlsx", index=False)
 
 
 SrcData_4f = np.column_stack(SrcData_4f)
 Column_names = ['k/k0'] + ['|D_sca|, t='+str(12.5*i) for i in range(9)] + ['D_inc']
 SrcData_4f = pd.DataFrame(SrcData_4f, columns=Column_names)
-SrcData_4f.to_excel("SourceData_Fig4f.xlsx", index=False)
 
 
 SrcData_4g = np.column_stack([omega/k0, np.abs(psi_sca_z0_F)*k0/delta])
 Column_names = ['omega/k0', '|D_sca(z=0)|'] 
 SrcData_4g = pd.DataFrame(SrcData_4g, columns=Column_names)
-SrcData_4g.to_excel("SourceData_Fig4g.xlsx", index=False)
+
+
+with pd.ExcelWriter("SourceData_Fig4.xlsx") as writer:
+    SrcData_4a.to_excel(writer, index=False, sheet_name="Fig. 4a")
+    SrcData_4b.to_excel(writer, index=False, sheet_name="Fig. 4b")
+    SrcData_4c.to_excel(writer, index=False, sheet_name="Fig. 4c")
+    SrcData_4de.to_excel(writer, index=False, sheet_name="Fig. 4de")
+    SrcData_4f.to_excel(writer, index=False, sheet_name="Fig. 4f")
+    SrcData_4g.to_excel(writer, index=False, sheet_name="Fig. 4g")
+
 
 
 #%% Supp Movie: Animation
