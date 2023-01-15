@@ -226,15 +226,15 @@ ce = np.array(matplotlib.colors.to_rgba('royalblue')).reshape(1,-1)
 newcolors = cs +  np.linspace(0,1,256).reshape(-1,1) @ (ce-cs)
 cmap2 = ListedColormap(newcolors)
 
-fig = plt.figure(figsize=(3.375*2, 2))
+fig = plt.figure(figsize=(7.08, 2.4))
 gs = GridSpec(nrows=125, ncols=200)
 
 
 
-ax = np.array([fig.add_subplot(gs[10:58,0:30]), fig.add_subplot(gs[62:110,0:30]),
-                fig.add_subplot(gs[10:41,50:95]), 
-                fig.add_subplot(gs[44:76,50:95]),
-                fig.add_subplot(gs[79:110,50:95]),
+ax = np.array([fig.add_subplot(gs[10:58,0:33]), fig.add_subplot(gs[62:110,0:33]),
+                fig.add_subplot(gs[10:41,51:98]), 
+                fig.add_subplot(gs[44:76,51:98]),
+                fig.add_subplot(gs[79:110,51:98]),
                 fig.add_subplot(gs[10:58,128:158]), fig.add_subplot(gs[10:58,170:200]),
                 fig.add_subplot(gs[62:110,128:158]), fig.add_subplot(gs[62:110,170:200])])
 
