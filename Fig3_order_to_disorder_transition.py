@@ -210,16 +210,16 @@ cmap1 = matplotlib.cm.get_cmap('cividis_r')
 newcolors = cmap1(np.linspace(0.15,1,256))
 cmap = ListedColormap(newcolors)
 
-fig = plt.figure(figsize=(3.375, 4))
+fig = plt.figure(figsize=(3.46, 4))
 gs = GridSpec(nrows=120, ncols=100)
 
-ax = np.array([fig.add_subplot(gs[2:14,7:45]), fig.add_subplot(gs[2:14,55:93]),
-               fig.add_subplot(gs[16:35,7:93]), 
-                fig.add_subplot(gs[55:64,7:70]), 
-                fig.add_subplot(gs[64:73,7:70]),
-                fig.add_subplot(gs[73:82,7:70]),
-                fig.add_subplot(gs[102:115,7:42]), fig.add_subplot(gs[102:115,58:93]),
-                fig.add_subplot(gs[55:82,75:93]),])
+ax = np.array([fig.add_subplot(gs[0:10,7:45]), fig.add_subplot(gs[0:10,55:93]),
+               fig.add_subplot(gs[12:30,7:93]), 
+                fig.add_subplot(gs[50:60,7:70]), 
+                fig.add_subplot(gs[60:70,7:70]),
+                fig.add_subplot(gs[70:80,7:70]),
+                fig.add_subplot(gs[100:115,7:42]), fig.add_subplot(gs[100:115,58:93]),
+                fig.add_subplot(gs[50:80,75:93]),])
 
 
 # Fig 3a
@@ -398,9 +398,49 @@ Column_names  = ['kc/omega0',
 Src_Data_3ef = pd.DataFrame(Src_Data_3ef, columns=Column_names)
 Src_Data_3ef.to_excel("SourceData_Fig3ef.xlsx", index=False)
 
-#%% Source Data for all k values
+#%% Source Data
 
-Src_Data_3def = np.vstack([P_fw_ens_total, P_bw_ens_total])
+
+Src_Data_3c = np.column_stack(Src_Data_3c)
+Column_names = ['t', '(A) Delta epsilon/delta', '(C) Delta epsilon/delta', '(D) Delta epsilon/delta']
+Src_Data_3c = pd.DataFrame(Src_Data_3c, columns=Column_names)
+
+
+Src_Data_3d = np.column_stack([order_metric/delta**4,
+                               P_bw_ens_mean[:,100]/delta**2, P_bw_ens_q1[:,100]/delta**2, P_bw_ens_q3[:,100]/delta**2,
+                               0.25*Int_2d_stat[:,1]/delta**2, S_list[0, 6000]*omega_b**2 *Tp/(4*delta**2)*np.ones(12)])
+Column_names = ['tau', 'P_BW, mean', 'P_BW, q1', 'P_BW, q3', 'Eq. (5)', 'Eq. (6)']
+Src_Data_3d = pd.DataFrame(np.real(Src_Data_3d), columns=Column_names)
+
+
+
+Src_Data_3ef = np.column_stack([k_list/omega_b,
+                                P_fw_ens_mean[0]/delta**2, P_fw_ens_q1[0]/delta**2, P_fw_ens_q3[0]/delta**2,
+                                P_fw_ens_mean[2]/delta**2, P_fw_ens_q1[2]/delta**2, P_fw_ens_q3[2]/delta**2,
+                                P_fw_ens_mean[11]/delta**2, P_fw_ens_q1[11]/delta**2, P_fw_ens_q3[11]/delta**2,
+                                P_bw_ens_mean[0]/delta**2, P_bw_ens_q1[0]/delta**2, P_bw_ens_q3[0]/delta**2,
+                                P_bw_ens_mean[2]/delta**2, P_bw_ens_q1[2]/delta**2, P_bw_ens_q3[2]/delta**2,
+                                P_bw_ens_mean[11]/delta**2, P_bw_ens_q1[11]/delta**2, P_bw_ens_q3[11]/delta**2])
+Column_names = ['kc/omega_0', 
+                '(A) P_FW, mean', '(A) P_FW, q1', '(A) P_FW, q3',
+                '(B) P_FW, mean', '(B) P_FW, q1', '(B) P_FW, q3',
+                '(D) P_FW, mean', '(D) P_FW, q1', '(D) P_FW, q3',
+                '(A) P_BW, mean', '(A) P_BW, q1', '(A) P_BW, q3',
+                '(B) P_BW, mean', '(B) P_BW, q1', '(B) P_BW, q3',
+                '(D) P_BW, mean', '(D) P_BW, q1', '(D) P_BW, q3']
+Src_Data_3ef = pd.DataFrame(np.real(Src_Data_3ef), columns=Column_names)
+
+
+with pd.ExcelWriter("SourceData_Fig3.xlsx") as writer:
+    Src_Data_3c.to_excel(writer, index=False, sheet_name="Fig. 3c")
+    Src_Data_3d.to_excel(writer, index=False, sheet_name="Fig. 3d")
+    Src_Data_3ef.to_excel(writer, index=False, sheet_name="Fig. 3ef")
+
+
+
+#%% Source (Ensemble) Data for all k values
+
+Ens_Data_3def = np.vstack([P_fw_ens_total, P_bw_ens_total])
 Column_names = ['kc/omega0='+str(k_list[i]/omega_b) for i in range(201)]
-Src_Data_3def = pd.DataFrame(Src_Data_3def, columns=Column_names)
-Src_Data_3def.to_excel("SourceData_Fig3def.xlsx", index=False)
+Ens_Data_3def = pd.DataFrame(Ens_Data_3def, columns=Column_names)
+Ens_Data_3def.to_excel("EnsembleData_Fig3def.xlsx", index=False)
