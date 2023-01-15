@@ -1,6 +1,6 @@
 ## Unidirectional scattering with spatial homogeneity using photonic time disorder
 
-This repository contains the code and data for preprint [arXiv:2208.11884](https://arxiv.org/abs/2208.11884), which is to be published in XXX.
+This repository contains codes for the numerical analysis and the data visualization in preprint [arXiv:2208.11884](https://arxiv.org/abs/2208.11884), which is to be published in Nature Physics (2023).
 
 
 ### Original Environment
@@ -25,9 +25,7 @@ Every .py file for each figure includes:
 * data acquisition for ensembles (if needed),
 * and plotting figure,  
 
-which are separated by a few of cells. Running cells successively will finally result in the output figure in pdf format.
-
-
+which are separated by a few of cells. Running cells successively will finally result in the output figure and its source data in pdf, xlsx formats, respectively.
 
 
 ### Ensemble Data
