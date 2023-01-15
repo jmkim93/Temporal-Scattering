@@ -1,4 +1,4 @@
-## Unidirectional scattering with spatial homogeneity using photonic time disorder
+## Unidirectional scattering with spatial homogeneity using corelated photonic time disorder
 
 This repository contains codes for the numerical analysis and the data visualization in preprint [arXiv:2208.11884](https://arxiv.org/abs/2208.11884), which is to be published in Nature Physics (2023).
 
