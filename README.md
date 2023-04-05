@@ -1,6 +1,6 @@
 ## Unidirectional scattering with spatial homogeneity using corelated photonic time disorder
 
-This repository contains codes for the numerical analysis and the data visualization of the results in [J. Kim et al., Nat. Phys (2023)](https://doi.org/10.1038/s41567-023-01962-3).
+This repository contains codes for the numerical analysis and the data visualization of the results in [J. Kim et al., Nat. Phys. (2023)](https://doi.org/10.1038/s41567-023-01962-3).
 
 
 ### Original Environment
