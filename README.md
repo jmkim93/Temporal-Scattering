@@ -1,13 +1,13 @@
 ## Unidirectional scattering with spatial homogeneity using corelated photonic time disorder
 
-This repository contains codes for the numerical analysis and the data visualization in preprint [arXiv:2208.11884](https://arxiv.org/abs/2208.11884), which is to be published in Nature Physics (2023).
+This repository contains codes for the numerical analysis and the data visualization of the results in [J. Kim et al., Nat. Phys (2023)](https://doi.org/10.1038/s41567-023-01962-3).
 
 
 ### Original Environment
 * Ubuntu 20.04 LTS
 * AMD Ryzen 3950X 16-core processor with 128 GB RAM 
 
-### Prerequisite
+### Dependencies
 * Python 3.9.6
 * Numpy 1.20.3  
 * Matplotlib 3.4.2
